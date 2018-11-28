@@ -5,7 +5,7 @@ The tests were run on a TDS3034B and the following assumptions about the interna
 * Binary encoding (ENCDG BIN)
 * Two bytes per sample point (BYT_NR 2)
 * 16 bits per sample (BIT_NR 16)
-* Big-endian byte order (BYT_OR MSG)
+* Big-endian byte order (BYT_OR MSB)
 * Signed binary format (BN_FMT RI)
 
 The CSV conversion is printed to standard output.
