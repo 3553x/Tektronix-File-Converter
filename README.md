@@ -7,6 +7,7 @@ The tests were run on a TDS3034B and the following assumptions about the interna
 * 16 bits per sample (BIT_NR 16)
 * Big-endian byte order (BYT_OR MSG)
 * Signed binary format (BN_FMT RI)
+
 The CSV conversion is printed to standard output.
 
 ## Sample Usage
