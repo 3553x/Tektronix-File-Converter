@@ -1,35 +1,41 @@
 #!/usr/bin/python3
 import struct, sys
 
-CURVE_START = b":CURVE #"
-PREAMBLE_START = b":WFMPRE:"
+CURVE_START_V = b":CURVE #"
+CURVE_START = b":CURV #"
+PREAMBLE_START_V = b":WFMPRE:"
+PREAMBLE_START = b":WFMP:"
 
 
 def convert(data):
-
-  if(CURVE_START not in data):
+  if(CURVE_START in data):
+    verbose = False
+  elif(CURVE_START_V in data):
+    verbose = True
+  else:
     raise Exception("No curve data found")
-  if(PREAMBLE_START not in data):
+
+  if((PREAMBLE_START_V if verbose else PREAMBLE_START) not in data):
     raise Exception("No preamble found")
 
-  preamble_start = data.index(PREAMBLE_START)
-  preamble_end = data.index(CURVE_START)
+  preamble_start = data.index(PREAMBLE_START_V if verbose else PREAMBLE_START)
+  preamble_end = data.index(CURVE_START_V if verbose else CURVE_START)
 
   curve_start = preamble_end
   #We assume data follow preamble
 
-  preamble = data[preamble_start + len(PREAMBLE_START):preamble_end]
-  curve = data[curve_start + len(CURVE_START):]
+  preamble = data[preamble_start + len(PREAMBLE_START_V if verbose else PREAMBLE_START):preamble_end]
+  curve = data[curve_start + len(CURVE_START_V if verbose else CURVE_START):]
 
   preamble_fields = {field[:field.index(b" ")] : field[field.index(b" ") + 1:] for field in preamble.split(b";")[:-1]}
   
 
-  x_factor = float(preamble_fields[b"XINCR"])
-  x_zero = float(preamble_fields[b"XZERO"])
+  x_factor = float(preamble_fields[b"XINCR" if verbose else b"XIN"])
+  x_zero = float(preamble_fields[b"XZERO" if verbose else b"XZE"])
 
-  y_factor = float(preamble_fields[b"YMULT"])
-  y_offset = float(preamble_fields[b"YOFF"])
-  y_zero = float(preamble_fields[b"YZERO"])
+  y_factor = float(preamble_fields[b"YMULT" if verbose else b"YMU"])
+  y_offset = float(preamble_fields[b"YOFF" if verbose else b"YOF"])
+  y_zero = float(preamble_fields[b"YZERO" if verbose else b"YZE"])
   
   size_len = int(chr(curve[0]))
   size = int(curve[1: 1+size_len])
